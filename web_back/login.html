@@ -9,6 +9,8 @@
     <link rel="stylesheet" type="text/css" href="css/reset.css">
     <link rel="stylesheet" type="text/css" href="css/iconfont.css">
     <link rel="stylesheet" type="text/css" href="css/main.css">
+    <!-- 引入bootstrap的样式文件 -->
+    <link rel="stylesheet" href="./js/bootstrap/css/bootstrap.min.css">
 </head>
 
 <body>
@@ -29,13 +31,36 @@
             </form>
         </div>
 
-    </div> 
+    </div>
+
+    <!-- 模态框 -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">温馨提示!</h4>
+                </div>
+                <div class="modal-body">
+                   
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <!-- 引入jq文件 -->
     <script src="./js/jquery-1.12.4.min.js"></script>
+    <!-- 引入bootstrap的js文件 -->
+    <script src="./js/bootstrap/js/bootstrap.min.js"></script>
     <script>
         //入口函数
-        $(function(){
+        $(function () {
             /*
             步骤
             1.给登录一个点击事件.
@@ -46,35 +71,43 @@
                     如果正确,跳转到首页; 如果不正确就要提示账号或密码错误.
             */
             // 1.给登录一个点击事件.阻止submit按钮的一个默认跳转.
-            $('#btn_login').on('click',function(e){
+            $('#btn_login').on('click', function (e) {
                 e.preventDefault();
                 //2.获取用户输入的用户名和密码, 去掉前后空格
                 var userName = $('.input_txt').val().trim();
                 var password = $('.input_pass').val().trim();
                 //判断是否为空, 
-                if(userName == "" || password == ""){
+                if (userName == "" || password == "") {
                     //如果为空不要继续,
-                    alert("账号或密码为空!");
+                    // alert("账号或密码为空!");
+                    $('.modal-body').text('账号或密码为空!');
+                    $('#myModal').modal({
+                        keyboard: true
+                    })
                     return;
                 }
                 //如果不为空就继续
                 //4.发送ajax请求,
                 $.ajax({
-                    type:'post',
-                    url:'http://localhost:8000/admin/login',
-                    data:{
-                        user_name:userName,
-                        password:password
+                    type: 'post',
+                    url: 'http://localhost:8000/admin/login',
+                    data: {
+                        user_name: userName,
+                        password: password
                     },
-                    success:function(backData){
+                    success: function (backData) {
                         console.log(backData);
                         //判断账号密码是否正确.
-                        if(backData.code == 200){
+                        if (backData.code == 200) {
                             //如果正确,跳转到首页;
                             window.location.href = './index.html';
-                        }else {
-                            alert('账号或者密码错误!');
-                        }  
+                        } else {
+                            // alert('账号或者密码错误!');
+                            $('.modal-body').text('账号或者密码错误!');
+                            $('#myModal').modal({
+                                keyboard: true
+                            })
+                        }
                     }
                 });
 
