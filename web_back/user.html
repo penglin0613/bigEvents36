@@ -24,19 +24,19 @@
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">用户名称：</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control" id="inputEmail3" value="李思思">
+                        <input type="text" class="form-control username"  value="李思思">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">昵称：</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control" id="inputEmail3" value="思思">
+                        <input type="text" class="form-control nickname" value="思思">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">邮箱：</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control" id="inputEmail3" value="lisisi@126.com">
+                        <input type="text" class="form-control email"  value="lisisi@126.com">
                     </div>
                 </div>
                 
@@ -51,7 +51,7 @@
                 <div class="form-group">
                         <label for="inputEmail3" class="col-sm-2 control-label">密码：</label>
                         <div class="col-sm-4">
-                            <input type="password" class="form-control" id="inputEmail3" value="12345678">
+                            <input type="password" class="form-control password"  value="12345678">
                         </div>
                     </div>
                
@@ -65,6 +65,35 @@
         </div>
     </div>
 
+    <script>
+        $(function(){
+            /*
+            步骤:
+            进到个人中心,发送ajax请求,获取到个人信息.
+            把个人信息显示在对应的标签中.
+            */
+           $.ajax({
+              url:'http://localhost:8000/admin/userinfo_get',
+              success:function(backData){
+                console.log(backData);
+                if(backData.code == 200){
+                    // 把个人信息显示在对应的标签中.
+                    // $('input.username').val(backData.data.username);
+                    // $('input.nickname').val(backData.data.nickname);
+                    // $('input.email').val(backData.data.email);
+                    // $('input.password').val(backData.data.password);
+
+                    for(var key in backData.data){
+                        $('input.'+key).val(backData.data[key]);
+                    }
+
+                    $('img.user_pic').attr('src',backData.data.user_pic);
+                }
+              } 
+           });
+
+        });
+    </script>
 </body>
 
 </html>
