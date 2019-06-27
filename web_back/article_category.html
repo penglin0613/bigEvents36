@@ -93,14 +93,14 @@
                     <form>
                         <!-- 新增了一个input,用来存放id, 因为修改需要用到id -->
                         <!-- input标签的type属性为hidden, 这就是看不见的一个input标签,我们成为隐藏域 -->
-                        <input type="hidden" class="id">
+                        <input type="hidden" class="id" name="id">
                         <div class="form-group">
                             <label for="recipient-name" class="control-label">分类名称:</label>
-                            <input type="text" class="form-control name">
+                            <input type="text" name="name" class="form-control name">
                         </div>
                         <div class="form-group">
                             <label for="message-text" class="control-label">分类别名:</label>
-                            <input type="text" class="form-control slug">
+                            <input type="text" name="slug" class="form-control slug">
                         </div>
                     </form>
                 </div>
@@ -192,18 +192,25 @@
                 if ($(this).hasClass('btn-success')) {
                     //保存
                     //获取当前要修改的类型的id, 和修改后的类别名, 和修改后的类别的别名.
-                    var cataId = $('.modal-body .id').val();
-                    var cataName = $('.modal-body .name').val();
-                    var cataSlug = $('.modal-body .slug').val();
+                    // var cataId = $('.modal-body .id').val();
+                    // var cataName = $('.modal-body .name').val();
+                    // var cataSlug = $('.modal-body .slug').val();
+                    //如果这里获取数据有很多,那一条条的获取就会很头疼, 所以我们可以使用formData
+                    //但是使用formData的前提是后端要接受.
+                    //如果后端没有用formData接受,数据很多,那我们可以用jQuery的一个方法
+                    var data1 = $('form').serialize(); //表单序列化
+                    //把form表单中带有name属性的标签的值,获取出来,组成key=value&key=value这种格式的字符串.
+
                     //发送ajax请求
                     $.ajax({
                         type:'post',
                         url:'http://localhost:8000/admin/category_edit',
-                        data:{
-                            id:cataId,
-                            name:cataName,
-                            slug:cataSlug
-                        },
+                        // data:{
+                        //     id:cataId,
+                        //     name:cataName,
+                        //     slug:cataSlug
+                        // },
+                        data:data1,
                         success:function(backData){
                             console.log(backData);
                             //修改成功后,修改dom树里面的元素
@@ -288,9 +295,6 @@
                 $('.modal-body .id').val(id);
                 $('.modal-body .name').val(cataName);
                 $('.modal-body .slug').val(slugName);
-
-
-
 
 
                 //隐藏模态框
