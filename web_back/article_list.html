@@ -30,11 +30,11 @@
                             <option>爱旅行</option>
                         </select>
                         <select id="selStatus" name="" class="form-control input-sm">
-                            <option>所有状态</option>
-                            <option value="drafted">草稿</option>
-                            <option value="published">已发布</option>
+                            <option value="">所有状态</option>
+                            <option>草稿</option>
+                            <option>已发布</option>
                         </select>
-                        <button id="btnSearch" class="btn btn-default btn-sm">筛选</button>
+                        <button id="btnSearch" class="btn btn-default btn-sm btn-search">筛选</button>
                     </form>
                 </div>
                 <div class="col-xs-6">
@@ -272,10 +272,26 @@
     <script src="./js/template-web.js"></script>
     <!-- 写一个模板 -->
     <script id="tmp_cate" type="text/html">
-       <option>所有分类</option>
+       <option value="">所有分类</option>
        {{each data}}
        <option value="{{$value.id}}">{{$value.name}}</option>
        {{/each}} 
+    </script>
+    <!-- 模板 -->
+    <script id='tmp_list' type="text/html">
+        {{each data v}}
+        <tr>
+        <td>{{v.title}}</td>
+        <td>{{v.author}}</td>
+        <td>{{v.type}}</td>
+        <td class="text-center">{{v.date}}</td>
+        <td class="text-center">{{v.state}}</td>
+        <td class="text-center">
+            <a href="article_edit.html" class="btn btn-default btn-xs">编辑</a>
+            <a href="javascript:deleteTr( {{v.id}} );" class="btn btn-danger btn-xs">删除</a>
+        </td>
+        </tr>
+        {{/each}}
     </script>
     <script>
         // 设置左侧菜单
@@ -294,6 +310,33 @@
                     $('#selCategory').html(resHtml);
                 }
             }
+        });
+
+
+        //点击筛选按钮搜索文章
+        $('#btnSearch').on('click',function(e){
+            e.preventDefault();
+            //获取文章类别id和状态.
+            var cateId = $('#selCategory').val();
+            var state = $('#selStatus').val();
+            //console.log(cateId,state);
+            //发送ajax请求
+            $.ajax({
+                url:'http://localhost:8000/admin/search',
+                data:{
+                   type: cateId,
+                   state:state,
+                   page:1,
+                   perpage:5
+                },
+                success:function(backData){
+                    //console.log(backData);
+                    if(backData.code == 200){
+                        var resHtml = template('tmp_list',backData);
+                        $('tbody').html(resHtml);;
+                    }
+                }
+            });
         });
 
     </script>
