@@ -72,7 +72,7 @@
                 <tfoot>
                     <tr>
                         <td colspan="3" class="text-center">
-                            <a href="#" class="btn btn-success" data-toggle="modal" data-target="#addModal">新增分类</a>
+                            <a href="#" class="btn btn-success btn-addCate" data-toggle="modal" data-target="#addModal">新增分类</a>
                         </td>
                     </tr>
                 </tfoot>
@@ -118,12 +118,7 @@
             $('#addModal').modal('hide');
         });
 
-        $('.category_table').delegate('a', 'click', function () {
-            if ($(this).hasClass('btn-info')) {
-                $('#addModal .modal-title').html('修改分类名称');
-                $('#addModal').modal('show');
-            }
-        })      
+
     </script>
 
     <!-- 引入模板引擎js文件 -->
@@ -135,7 +130,7 @@
             <td>{{v.name}}</td>
             <td>{{v.slug}}</td>
             <td class="text-center">
-                <a href="javascript:editTr({&quot;id&quot;:&quot;1&quot;,&quot;slug&quot;:&quot;uncategorized&quot;,&quot;name&quot;:&quot;未分类&quot;});" class="btn btn-info btn-xs">编辑</a>
+                <a href="#" data-id='{{v.id}}' class="btn btn-info btn-xs btn-edit">编辑</a>
                 <a href="#" data-id='{{v.id}}' class="btn btn-danger btn-xs btn-delete">删除</a>
             </td>
         </tr>
@@ -170,6 +165,15 @@
             getCataData();
 
 
+            //给页面上的那个 新增分类按钮(不是模态框里的那个新增) ,设置点击事件
+            $('.btn-addCate').on('click',function(){
+                 //修改模态框里面的title显示的文本.
+                 $('#addModal .modal-title').html('新增分类');
+                //给那个模态框里面的按钮,移除一个这个btn-success类.和修改文本
+                $('#model_add').removeClass('btn-success').text('新增'); 
+            })
+            
+
             /*
             分类新增
             1.给新增按钮设置一个点击事件.
@@ -177,7 +181,7 @@
             3.发送ajax请求
             4.新增成功后,再重新获取一次文章类别
             */
-            // 1.给新增按钮设置一个点击事件.
+            // 1.给模态框里面的新增按钮设置一个点击事件.
             $('#model_add').click(function () {
                 //2.获取用户输入的类别名称和别名
                 var cateName = $('.modal-body .name').val();
@@ -220,7 +224,7 @@
                         success: function (backData) {
                             console.log(backData);
                             //判断删除成功
-                            if(backData.code == 200){
+                            if (backData.code == 200) {
                                 //getCataData();
                                 that.parent().parent().remove();
                             }
@@ -229,6 +233,18 @@
                 }
             });
 
+
+
+            //给编辑按钮设置一个点击事件,使用委托的方式.
+            $('tbody').on('click', '.btn-edit', function () {
+                //修改模态框里面的title显示的文本.
+                $('#addModal .modal-title').html('修改分类');
+                //给那个模态框里面的按钮,添加一个这个btn-success类.和修改文本
+                $('#model_add').addClass('btn-success').text('保存');
+
+                //隐藏模态框
+                $('#addModal').modal('show');
+            })
 
 
 
