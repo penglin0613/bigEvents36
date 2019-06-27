@@ -136,7 +136,7 @@
             <td>{{v.slug}}</td>
             <td class="text-center">
                 <a href="javascript:editTr({&quot;id&quot;:&quot;1&quot;,&quot;slug&quot;:&quot;uncategorized&quot;,&quot;name&quot;:&quot;未分类&quot;});" class="btn btn-info btn-xs">编辑</a>
-                <a href="javascript:deleteTr( {{v.id}} );" class="btn btn-danger btn-xs">删除</a>
+                <a href="#" data-id='{{v.id}}' class="btn btn-danger btn-xs btn-delete">删除</a>
             </td>
         </tr>
         {{/each}}
@@ -200,6 +200,33 @@
                 });
                 //隐藏模态框
                 $('#addModal').modal('hide');
+            });
+
+
+            //给删除按钮们注册事件,委托注册.
+            $('tbody').on('click', '.btn-delete', function () {
+                var that = $(this);
+                //确认框.
+                if (confirm('你确定要删除吗?')) {
+                    //获取当前这个类别的id
+                    var id = $(this).attr('data-id');
+                    //发送ajax请求.
+                    $.ajax({
+                        type: 'post',
+                        url: 'http://localhost:8000/admin/category_delete',
+                        data: {
+                            id: id
+                        },
+                        success: function (backData) {
+                            console.log(backData);
+                            //判断删除成功
+                            if(backData.code == 200){
+                                //getCataData();
+                                that.parent().parent().remove();
+                            }
+                        }
+                    });
+                }
             });
 
 
