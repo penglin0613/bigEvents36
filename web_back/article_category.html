@@ -80,6 +80,7 @@
         </div>
     </div>
 
+    <!-- 模态框 -->
     <div class="modal fade" id="addModal">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -172,7 +173,7 @@
                 //给那个模态框里面的按钮,移除一个这个btn-success类.和修改文本
                 $('#model_add').removeClass('btn-success').text('新增'); 
             })
-            
+
 
             /*
             分类新增
@@ -241,6 +242,12 @@
                 $('#addModal .modal-title').html('修改分类');
                 //给那个模态框里面的按钮,添加一个这个btn-success类.和修改文本
                 $('#model_add').addClass('btn-success').text('保存');
+
+                //获取当前点击的a标签前面的文章类别和文章类别别名,显示在模态框对应的input标签中.
+                var cataName = $(this).parent().prev().prev().text();
+                var slugName = $(this).parent().prev().text();
+                $('.modal-body .name').val(cataName);
+                $('.modal-body .slug').val(slugName);
 
                 //隐藏模态框
                 $('#addModal').modal('show');
