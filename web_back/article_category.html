@@ -91,11 +91,11 @@
                     <form>
                         <div class="form-group">
                             <label for="recipient-name" class="control-label">分类名称:</label>
-                            <input type="text" class="form-control" id="recipient-name">
+                            <input type="text" class="form-control name">
                         </div>
                         <div class="form-group">
                             <label for="message-text" class="control-label">分类别名:</label>
-                            <input type="text" class="form-control" id="recipient-name">
+                            <input type="text" class="form-control slug">
                         </div>
                     </form>
                 </div>
@@ -115,11 +115,6 @@
 
         $('#model_shutoff').click(function () {
             alert('shutoff');
-            $('#addModal').modal('hide');
-        });
-
-        $('#model_add').click(function () {
-            alert('add');
             $('#addModal').modal('hide');
         });
 
@@ -148,25 +143,71 @@
     </script>
     <script>
         $(function () {
-            /*
-            1.一进到文章分类页面,发送ajax请求, 获取所有的文章分类信息.
+            /*把用ajax获取文章类别的代码封装成一个函数.
+            1.发送ajax请求, 获取所有的文章分类信息.
             2.把这些文章分类信息, 通过模板引擎渲染到页面上.
             */
-            $.ajax({
-                url: 'http://localhost:8000/admin/category_search',
-                success: function (backData) {
-                    console.log(backData);
-                    if (backData.code == 200) {
-                        //把这些文章分类信息, 通过模板引擎渲染到页面上.
-                        //调用模板引擎核心方法.
-                        var resHtml = template('tmp_cate',backData);
-                        //渲染到tbody
-                        $('tbody').html(resHtml);
+            function getCataData() {
+                $.ajax({
+                    url: 'http://localhost:8000/admin/category_search',
+                    success: function (backData) {
+                        console.log(backData);
+                        if (backData.code == 200) {
+                            //把这些文章分类信息, 通过模板引擎渲染到页面上.
+                            //调用模板引擎核心方法.
+                            var resHtml = template('tmp_cate', backData);
+                            //渲染到tbody
+                            $('tbody').html(resHtml);
+                        }
                     }
-                }
+                });
+            }
+
+
+            /*
+            1.一进到文章分类页面,就调用函数显示所有的文字分类
+            */
+            getCataData();
+
+
+            /*
+            分类新增
+            1.给新增按钮设置一个点击事件.
+            2.获取用户输入的类别名称和别名
+            3.发送ajax请求
+            4.新增成功后,再重新获取一次文章类别
+            */
+            // 1.给新增按钮设置一个点击事件.
+            $('#model_add').click(function () {
+                //2.获取用户输入的类别名称和别名
+                var cateName = $('.modal-body .name').val();
+                var cateSlug = $('.modal-body .slug').val();
+                // 3.发送ajax请求
+                $.ajax({
+                    type: 'post',
+                    url: 'http://localhost:8000/admin/category_add',
+                    data: {
+                        name: cateName,
+                        slug: cateSlug
+                    },
+                    success: function (backData) {
+                        console.log(backData);
+                        //4.新增成功后,调用函数 重新获取一次文章类别
+                        if (backData.code == 200) {
+                            getCataData();
+                        }
+                    }
+                });
+                //隐藏模态框
+                $('#addModal').modal('hide');
             });
 
+
+
+
         });
+
+
     </script>
 
 </body>
