@@ -33,6 +33,7 @@
                 <div class="form-group">
                     <label for="inputPassword3" class="col-sm-2 control-label">文章封面：</label>
                     <div class="col-sm-10">
+                        <img src="" alt="" style="height: 150px;">
                         <input type="file" id="exampleInputFile">
                     </div>
                 </div>
@@ -80,6 +81,24 @@
         </div>
     </div>
 
+
+    <script>
+        $(function () {
+            //图片预览功能
+            /*
+            1.给选择图片的按钮change事件.
+            2.用files[0]获取选中的图片文件.
+            3.用URL.createObjectURL方法创建一个url出来
+            4.赋值给img
+            */
+            $('#exampleInputFile').on('change', function () {
+                var icon = this.files[0];
+                var url = URL.createObjectURL(icon);
+                $(this).prev().attr('src', url);
+            });
+
+        });
+    </script>
 </body>
 
 </html>
