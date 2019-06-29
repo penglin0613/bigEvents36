@@ -29,20 +29,20 @@
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">文章标题：</label>
                     <div class="col-sm-10">
-                        <input type="email" class="form-control" id="inputEmail3" placeholder="文章标题">
+                        <input type="text" name="title" class="form-control" id="inputEmail3" placeholder="文章标题">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputPassword3" class="col-sm-2 control-label">文章封面：</label>
                     <div class="col-sm-10">
                         <img src="" alt="" style="height: 150px;">
-                        <input type="file" id="exampleInputFile">
+                        <input type="file" name="cover" id="exampleInputFile">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">文章类别：</label>
                     <div class="col-sm-4">
-                        <select class="form-control">
+                        <select name="type" class="form-control article-cate">
                             <option>1</option>
                             <option>2</option>
                             <option>3</option>
@@ -56,7 +56,7 @@
                     <div class="col-sm-4">
 
                         <div class="input-group">
-                            <input type="text" class="form-control" placeholder="YYYY-MM-DD" id="dateinput">
+                            <input type="text" name="date" class="form-control" placeholder="YYYY-MM-DD" id="dateinput">
                             <span class="input-group-btn">
                                 <button class="btn btn-default" type="button"
                                     onclick="jeDate('#dateinput',{trigger:false,format: 'YYYY-MM-DD'})"><i
@@ -68,14 +68,14 @@
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">文章内容：</label>
                     <div class="col-sm-10">
-                        <textarea class="form-control" id="rich_content" name="content" placeholder="文章内容">
+                        <textarea class="form-control" id="rich_content" placeholder="文章内容">
                             Lorem ipsum dolor sit amet consectetur adipisicing elit. Assumenda fugiat illo nihil molestias ab. Laborum eius non atque, totam sapiente quae obcaecati assumenda ratione inventore pariatur maiores, qui libero delectus.
-                            </textarea>
+                        </textarea>
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
-                        <button type="submit" class="btn btn-success">发布</button>
+                        <button type="submit" class="btn btn-success btn-release">发布</button>
                         <button type="submit" class="btn btn-default">存为草稿</button>
                     </div>
                 </div>
@@ -85,7 +85,7 @@
 
 
     <!-- 准一个模板 -->
-    <script id="tmp_cate" type="text/html" >
+    <script id="tmp_cate" type="text/html">
         {{each data v}}
         <option value="{{v.id}}">{{v.name}}</option>
         {{/each}}
@@ -110,25 +110,56 @@
             1.一进来文章新增页面就发送ajax请求.获取到所有的文章类别数据
             2.使用模板引擎渲染, 注意的是需要id, 就要使用value属性来放id
             */
-           $.ajax({
-               url:'http://localhost:8000/admin/category_search',
-               success:function(backData){
-                if(backData.code == 200){
-                    var resHtml = template('tmp_cate',backData);
-                    $('.form-control').html(resHtml);
+            $.ajax({
+                url: 'http://localhost:8000/admin/category_search',
+                success: function (backData) {
+                    if (backData.code == 200) {
+                        var resHtml = template('tmp_cate', backData);
+                        $('.article-cate').html(resHtml);
+                    }
                 }
-               }
-           });
+            });
 
 
-           //一进到发表文章页面,就用moment.js显示当前的系统事件.
-           //可以传一个时间戳,格式化他的时间.
-           //var dateNowStr = moment(1000*60*60*24*365*30).format('YYYY-MM-DD h:mm:ss');
-           var dateNowStr = moment().format('YYYY-MM-DD'); //当前时间格式化
-           $('#dateinput').val(dateNowStr);
+            //一进到发表文章页面,就用moment.js显示当前的系统事件.
+            //可以传一个时间戳,格式化他的时间.
+            //var dateNowStr = moment(1000*60*60*24*365*30).format('YYYY-MM-DD h:mm:ss');
+            var dateNowStr = moment().format('YYYY-MM-DD'); //当前时间格式化
+            $('#dateinput').val(dateNowStr);
 
 
-           
+            //发布文章
+            //1.给发布按钮一个点击事件
+            $('.btn-release').on('click', function (e) {
+                e.preventDefault();
+                //获取formData数据-检查form表单里面那些获取数据的标签是否都有name属性
+                var formData1 = new FormData($('form')[0]);
+                //富文本编辑器里面的内容获取不到,追加到formData里面去.
+                formData1.append('content', tinyMCE.activeEditor.getContent());
+                // 发送ajax请求
+                $.ajax({
+                    type:'post',
+                    url:'http://localhost:8000/admin/article_publish',
+                    contentType:false,
+                    processData:false,
+                    data:formData1,
+                    success:function(backData){
+                        console.log(backData);
+                        if(backData.code == 201){
+                            alert("发布成功!");
+                        }
+                        
+                    }
+                });
+
+            });
+
+
+
+
+
+
+
 
 
 
