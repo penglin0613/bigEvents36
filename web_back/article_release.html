@@ -16,6 +16,7 @@
     <script src="js/jedate/js/jedate.js"></script>
     <script src="js/tinymce/js/tinymce/tinymce.min.js"></script>
     <script src="js/tinymce/js/tinymce_setup.js"></script>
+    <script src="./js/moment.js"></script>
 </head>
 
 <body>
@@ -118,6 +119,18 @@
                 }
                }
            });
+
+
+           //一进到发表文章页面,就用moment.js显示当前的系统事件.
+           //可以传一个时间戳,格式化他的时间.
+           //var dateNowStr = moment(1000*60*60*24*365*30).format('YYYY-MM-DD h:mm:ss');
+           var dateNowStr = moment().format('YYYY-MM-DD'); //当前时间格式化
+           $('#dateinput').val(dateNowStr);
+
+
+           
+
+
 
         });
     </script>
