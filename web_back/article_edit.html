@@ -28,20 +28,20 @@
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">文章标题：</label>
                     <div class="col-sm-10">
-                        <input type="email" class="form-control title" id="article_title" value="文章标题文字">
+                        <input type="email" name="title" class="form-control title" id="article_title" value="文章标题文字">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputPassword3" class="col-sm-2 control-label">文章封面：</label>
                     <div class="col-sm-10">
                         <img src="images/pic06.jpg" class="article_cover">
-                        <input type="file" id="exampleInputFile">
+                        <input type="file" name="cover" id="exampleInputFile">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">文章类别：</label>
                     <div class="col-sm-4">
-                        <select class="form-control type">
+                        <select class="form-control type" name="type">
                             <option>类别三</option>
                             <option value="8">军事</option>
                             <option value='1'>科学</option>
@@ -56,7 +56,7 @@
                     <div class="col-sm-4">
 
                         <div class="input-group">
-                            <input type="text" class="form-control date" value="2019-05-17" id="dateinput">
+                            <input type="text" disabled class="form-control date" value="2019-05-17" id="dateinput">
                             <span class="input-group-btn">
                                 <button class="btn btn-default" type="button"
                                     onclick="jeDate('#dateinput',{trigger:false,format: 'YYYY-MM-DD'})"><i
@@ -68,13 +68,12 @@
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">文章内容：</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="rich_content" name="content" placeholder="文章内容"
-                            value="文章内容">
+                        <input type="text" class="form-control" id="rich_content" placeholder="文章内容" value="文章内容">
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
-                        <button type="submit" class="btn btn-success">修改</button>
+                        <button type="submit" class="btn btn-success btn-edit">修改</button>
                     </div>
                 </div>
             </form>
@@ -89,6 +88,7 @@
         {{/each}} 
      </script>
     <script>
+
         //一进到文章编辑页面,就要获取文章类别
         $.ajax({
             url: 'http://localhost:8000/admin/category_search',
@@ -105,7 +105,7 @@
         });
 
 
-        //文章编辑
+        //文章编辑第一步
         //2.在编辑页面 通过url的截取(window.location.search)拿到文章id
         var id = window.location.search.split("=")[1];
         //3.发送ajax请求(文章搜索的请求)
@@ -130,6 +130,34 @@
                 }
             }
         });
+
+
+        //文章编辑第二步
+        //1.给修改按钮设置一个点击事件
+        $('.btn-edit').on('click', function (e) {
+            e.preventDefault();
+            //通过formData的数据修改的.
+            var formData1 = new FormData($('form')[0]);
+            formData1.append('id', id); //需要编辑的文字id
+            formData1.append('content', tinyMCE.activeEditor.getContent()); //富文本编辑器的内容追加到formData中
+            // 2.发送ajax请求,修改.
+            $.ajax({
+                type:'post',
+                url:'http://localhost:8000/admin/article_edit',
+                contentType:false,
+                processData:false,
+                data:formData1,
+                success:function(backData){
+                    if(backData.code == 200){
+                        alert('修改成功!');
+                    }
+                }
+            });
+        });
+
+
+
+
 
     </script>
 </body>
