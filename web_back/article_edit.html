@@ -27,7 +27,7 @@
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">文章标题：</label>
                     <div class="col-sm-10">
-                        <input type="email" class="form-control" id="inputEmail3" value="文章标题文字">
+                        <input type="email" class="form-control title" id="article_title" value="文章标题文字">
                     </div>
                 </div>
                 <div class="form-group">
@@ -40,10 +40,11 @@
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">文章类别：</label>
                     <div class="col-sm-4">
-                        <select class="form-control">
-                            <option>类别一</option>
-                            <option>类别二</option>
+                        <select class="form-control type">
                             <option>类别三</option>
+                            <option value="8">军事</option>
+                            <option value='1'>科学</option>
+
                             <option selected>类别四</option>
                             <option>类别五</option>
                         </select>
@@ -54,7 +55,7 @@
                     <div class="col-sm-4">
 
                         <div class="input-group">
-                            <input type="text" class="form-control" value="2019-05-17" id="dateinput">
+                            <input type="text" class="form-control date" value="2019-05-17" id="dateinput">
                             <span class="input-group-btn">
                                 <button class="btn btn-default" type="button"
                                     onclick="jeDate('#dateinput',{trigger:false,format: 'YYYY-MM-DD'})"><i
@@ -66,7 +67,8 @@
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">文章内容：</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="rich_content" name="content" placeholder="文章内容" value="文章内容">
+                        <input type="text" class="form-control" id="rich_content" name="content" placeholder="文章内容"
+                            value="文章内容">
                     </div>
                 </div>
                 <div class="form-group">
@@ -78,6 +80,34 @@
         </div>
     </div>
 
+
+    <script>
+        //文章编辑
+        //2.在编辑页面 通过url的截取(window.location.search)拿到文章id
+        var id = window.location.search.split("=")[1];
+        //3.发送ajax请求(文章搜索的请求)
+        $.ajax({
+            url: 'http://localhost:8000/admin/search',
+            data: {
+                id: id
+            },
+            success: function (backData) {
+                //把这个搜索到的数据显示到编辑页对应的标签上
+                if (backData.code == 200) {
+                    $('input.title').val(backData.data.title);//文章标题
+
+                    $('img.article_cover').attr('src', backData.data.cover); //文章封面
+
+                    $('select.type').val(backData.data.type); //文章类别
+
+                    $('input.date').val(backData.data.date); //文章发布时间
+
+                    $('#rich_content').val(backData.data.content); //内容
+                }
+            }
+        });
+
+    </script>
 </body>
 
 </html>
