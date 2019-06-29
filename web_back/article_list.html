@@ -290,7 +290,7 @@
         <td class="text-center">{{v.state}}</td>
         <td class="text-center">
             <a href="article_edit.html" class="btn btn-default btn-xs">编辑</a>
-            <a href="javascript:deleteTr( {{v.id}} );" class="btn btn-danger btn-xs">删除</a>
+            <a href="#" data-id="{{v.id}}" class="btn btn-danger btn-xs btn-delete">删除</a>
         </td>
         </tr>
         {{/each}}
@@ -394,6 +394,33 @@
 
         //一进来这个文章列表页面,就触发一次筛选按钮的点击事件.
         // $('#btnSearch').trigger('click');
+
+
+        //文章删除
+        //1.给删除按钮设置点击事件,  文章列表是动态生成的,所以要委托注册.
+        $('tbody').on('click', '.btn-delete', function () {
+            if (confirm('你确定要删除吗?')) {
+                // 2.在删除按钮上高一个自定义属性data-id用来保存当前这篇文章的id.
+                //获取自定义属性保存的id
+                var id = $(this).attr('data-id');
+                // 3.发送ajax请求删除.
+                $.ajax({
+                    url: 'http://localhost:8000/admin/article_delete',
+                    data: {
+                        id: id
+                    },
+                    success: function (backData) {
+                        console.log(backData);
+                        if(backData.code == 200){   
+                            //重新渲染数据
+                            getData(1);
+                        }
+                    }
+                });
+            }
+        });
+
+
 
 
 
