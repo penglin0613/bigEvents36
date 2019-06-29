@@ -221,6 +221,46 @@
         <p>电话：0755-****888    粤ICP备*******8号</p>
     </div>
 
+
+    <!-- 引入模板引擎js文件 -->
+    <script src="./js/template-web.js"></script>
+    <!-- 准备一个模板 -->
+    <script id="c_list" type="text/html">
+        {{each data}}
+            {{if $index == 0}}
+            <li class="first">
+            {{else}}
+            <li>
+            {{/if}}    
+                <a href="#" data-id="{{$value.id}}"><img src="{{$value.cover}}" alt=""></a>
+                <p>{{$value.title}}</p>
+            </li>
+        {{/each}}
+    </script>
+    <script src="./js/jquery-1.12.4.min.js"></script>
+    <script>
+        $(function(){
+            //一进来就发送ajax请求,获取最新的5篇文字.
+            $.ajax({
+                url:'http://localhost:8000/admin/search',
+                data:{
+                    page:1,
+                    perpage:5
+                },
+                success:function(backData){
+                    console.log(backData);
+                    //调用模板引擎方法
+                    var resHtml = template('c_list',backData);
+                    $('.focus_list').html(resHtml);
+                }
+            });
+
+
+
+        });
+        
+    </script>
+
 </body>
 
 </html>
