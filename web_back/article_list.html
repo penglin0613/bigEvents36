@@ -367,10 +367,12 @@
                         //所以根据真实的总页码生成真实的页签条代码才应该放在这里
                         var totalPages = backData.totalPage; //获取真实的总页码数.
                         console.log(totalPages);
+
+                        window.currentPage = $pagination.twbsPagination('getCurrentPage');//把当前页获取放到判断外面
+
                         if (myTotalPage != totalPages) {
                             myTotalPage = totalPages; //把查询出来的真实的总页码数显示在页码条上.
-
-                            var currentPage = $pagination.twbsPagination('getCurrentPage');
+                            
                             //有一个问题,就是分页插件调用destroy方法的时候,会自动的去调用onPageClick事件.所以就无限循环了.
                             $pagination.twbsPagination('destroy');
                             $pagination.twbsPagination($.extend({}, defaultOpts, {
@@ -413,7 +415,7 @@
                         console.log(backData);
                         if(backData.code == 200){   
                             //重新渲染数据
-                            getData(1);
+                            getData(window.currentPage);
                         }
                     }
                 });

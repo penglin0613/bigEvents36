@@ -92,6 +92,7 @@
                 id: id
             },
             success: function (backData) {
+                console.log(backData);
                 //把这个搜索到的数据显示到编辑页对应的标签上
                 if (backData.code == 200) {
                     $('input.title').val(backData.data.title);//文章标题
